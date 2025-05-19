@@ -23,7 +23,7 @@ export class User {
   @Prop()
   provider: string;
 
-  @Prop({ required: true, enum: ['user', 'expert', 'admin'], default: 'user' })
+  @Prop({ required: true, enum: ['parent', 'child', 'admin'], default: 'parent' })
   role: string;
 
   @Prop()
@@ -34,6 +34,9 @@ export class User {
 
   @Prop({ default: false })
   isBlocked: boolean;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  parentId?: mongoose.Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
