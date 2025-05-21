@@ -27,4 +27,40 @@ export class NotificationService {
     notification.read = true;
     return notification.save();
   }
+
+  async sendNotificationToStudent(userId: string, title: string, message: string) {
+    const notification = new this.model({
+      user: userId,
+      title,
+      message,
+      read: false,
+      createdAt: new Date(),
+    });
+    await notification.save();
+  }
+
+  async notifyResult(userId: string, examResult: any) {
+    const scorePercent = examResult.correctPercentage;
+
+    if (scorePercent < 50) {
+      await this.sendNotificationToStudent(
+        userId,
+        'Warning: Learning method effectiveness',
+        `Your recent exam score is ${scorePercent}%. It appears the current learning method may need improvement. Please consult your instructor for advice.`
+      );
+    } else {
+      await this.sendNotificationToStudent(
+        userId,
+        'Good job on your recent exam!',
+        `You scored ${scorePercent}% on your exam "${examResult.exam.title}". Keep up the good work and continue applying your learning method!`
+      );
+    }
+  }
+
+  async getNotificationsByUser(userId: string) {
+    return this.model
+      .find({ user: userId })
+      .sort({ createdAt: -1 })
+      .exec();
+  }
 }

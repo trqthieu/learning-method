@@ -13,6 +13,8 @@ import { extractJson } from 'src/common/extract-json';
 import { AssessLearningMethodDto } from './dto/assess-learning-method.dto';
 import { AutoExamDto } from './dto/auto-exam.dto';
 import { ExamResult, ExamResultDocument } from 'src/schemas/exam-result.schema';
+import { NotificationService } from 'src/notification/notification.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ExamService {
@@ -21,6 +23,8 @@ export class ExamService {
     @InjectModel(ExamResult.name)
     private resultModel: Model<ExamResultDocument>,
     private readonly aiService: AiService,
+    private readonly notificationService: NotificationService,
+    private readonly usersService: UsersService,
   ) {}
 
   async generateAndCreateExam(autoExamDto: AutoExamDto): Promise<Exam> {
@@ -168,7 +172,23 @@ Return a JSON object with the following structure:
       submittedAnswers: submittedAnswers,
     });
 
-    return result.save();
+    const savedResult = await result.save();
+
+    // Notify the student
+    await this.notificationService.notifyResult(userId, { ...savedResult.toObject(), exam });
+  
+    // Find the student to get the parentId
+    const student = await this.usersService.findById(userId);
+    if (student?.parentId) {
+      // Send notification to the parent
+      await this.notificationService.sendNotificationToStudent(
+        student.parentId.toString(),
+        'Your child submitted an exam',
+        `${student.fullName} has submitted the exam "${exam.title}" and scored ${percentage}%.`
+      );
+    }
+  
+    return savedResult;
   }
 
   async getResultsByUser(userId: string) {

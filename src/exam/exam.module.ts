@@ -5,6 +5,8 @@ import { ExamController } from './exam.controller';
 import { Exam, ExamSchema } from 'src/schemas/exam.schema';
 import { AiModule } from 'src/ai/ai.module';
 import { ExamResult, ExamResultSchema } from 'src/schemas/exam-result.schema';
+import { NotificationModule } from 'src/notification/notification.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -13,6 +15,8 @@ import { ExamResult, ExamResultSchema } from 'src/schemas/exam-result.schema';
       { name: ExamResult.name, schema: ExamResultSchema },
     ]),
     AiModule,
+    NotificationModule,
+    UsersModule
   ],
   providers: [ExamService],
   controllers: [ExamController],

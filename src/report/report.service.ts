@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ExamResult, ExamResultDocument } from '../schemas/exam-result.schema';
+import { AiService } from 'src/ai/ai.service';
 
 @Injectable()
 export class ReportService {
   constructor(
     @InjectModel(ExamResult.name)
     private examResultModel: Model<ExamResultDocument>,
+    private readonly aiService: AiService,
   ) {}
 
   async getAllResults() {
@@ -15,7 +17,16 @@ export class ReportService {
   }
 
   async getResultsByUser(userId: string) {
-    return this.examResultModel.find({ user: userId }).populate('exam').exec();
+    return this.examResultModel
+      .find({ user: userId })
+      .populate({
+        path: 'exam',
+        populate: [
+          { path: 'subject' }, // populate exam.subject
+          { path: 'method' }, // populate exam.method
+        ],
+      })
+      .exec();
   }
 
   async getResultsByChildIds(childIds: string[]) {
@@ -56,5 +67,17 @@ export class ReportService {
       };
     });
     return summary;
+  }
+
+  async analyzeUserResults(userId: string) {
+    const examResults = await this.examResultModel
+      .find({ user: userId })
+      .populate({
+        path: 'exam',
+        populate: ['subject', 'method'],
+      })
+      .exec();
+    const analysis = await this.aiService.analyzeExamResults(examResults);
+    return { analysis };
   }
 }

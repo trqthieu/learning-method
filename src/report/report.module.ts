@@ -7,6 +7,7 @@ import { Exam, ExamSchema } from 'src/schemas/exam.schema';
 import { Subject, SubjectSchema } from 'src/schemas/subject.schema';
 import { LearningMethod, LearningMethodSchema } from 'src/schemas/learning-method.schema';
 import { User, UserSchema } from 'src/schemas/user.schema';
+import { AiModule } from 'src/ai/ai.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { User, UserSchema } from 'src/schemas/user.schema';
       { name: LearningMethod.name, schema: LearningMethodSchema },
       { name: User.name, schema: UserSchema },
     ]),
+    AiModule
   ],
   controllers: [ReportController],
   providers: [ReportService],

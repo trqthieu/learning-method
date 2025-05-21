@@ -15,7 +15,8 @@ export class ReportController {
   async getGlobalStats() {
     const results = await this.reportService.getAllResults();
     const total = results.length;
-    const avg = results.reduce((sum, r) => sum + r.correctPercentage, 0) / (total || 1);
+    const avg =
+      results.reduce((sum, r) => sum + r.correctPercentage, 0) / (total || 1);
     return {
       totalExams: total,
       averageScore: parseFloat(avg.toFixed(2)),
@@ -42,5 +43,11 @@ export class ReportController {
   @Get('child/:userId/stats')
   async getStatsByUser(@Param('userId') userId: string) {
     return this.reportService.getStatsForUser(userId);
+  }
+
+  @Get('analyze/:userId')
+  async analyzeUserResults(@Param('userId') userId: string) {
+    const analysis = await this.reportService.analyzeUserResults(userId);
+    return { analysis };
   }
 }
