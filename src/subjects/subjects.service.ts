@@ -9,33 +9,26 @@ import { Subject, SubjectDocument } from 'src/schemas/subject.schema';
 export class SubjectsService {
   constructor(@InjectModel(Subject.name) private subjectModel: Model<SubjectDocument>) {}
 
-  async create(childId: string, dto: CreateSubjectDto) {
-    return this.subjectModel.create({ ...dto, childId });
+  async create(dto: CreateSubjectDto): Promise<Subject> {
+    return this.subjectModel.create(dto);
   }
 
-  async findAllByChild(childId: string) {
-    return this.subjectModel.find({ childId });
+  async findAll(): Promise<Subject[]> {
+    return this.subjectModel.find().populate('childId').exec();
   }
 
-  async findOneByChild(id: string, childId: string) {
-    const subject = await this.subjectModel.findOne({ _id: id, childId });
+  async findByChildId(childId: string): Promise<Subject[]> {
+    return this.subjectModel.find({ childId }).populate('childId').exec();
+  }
+
+  async update(id: string, dto: UpdateSubjectDto): Promise<Subject> {
+    const subject = await this.subjectModel.findByIdAndUpdate(id, dto, { new: true }).populate('childId');
     if (!subject) throw new NotFoundException('Subject not found');
     return subject;
   }
 
-  async update(id: string, childId: string, dto: UpdateSubjectDto) {
-    const subject = await this.subjectModel.findOneAndUpdate(
-      { _id: id, childId },
-      dto,
-      { new: true },
-    );
-    if (!subject) throw new NotFoundException('Subject not found');
-    return subject;
-  }
-
-  async remove(id: string, childId: string) {
-    const result = await this.subjectModel.findOneAndDelete({ _id: id, childId });
+  async remove(id: string): Promise<void> {
+    const result = await this.subjectModel.findByIdAndDelete(id);
     if (!result) throw new NotFoundException('Subject not found');
-    return { message: 'Deleted successfully' };
   }
 }

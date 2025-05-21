@@ -8,12 +8,13 @@ import {
   Delete,
   Req,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('Subjects')
 @ApiBearerAuth()
@@ -23,32 +24,40 @@ export class SubjectsController {
   constructor(private readonly subjectsService: SubjectsService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create subject for a child user' })
+  // @Roles(UserRole.ADMIN, UserRole.PARENT)
+  // @ApiOperation({ summary: 'Tạo môn học mới (Admin/Parent)' })
   create(@Body() dto: CreateSubjectDto) {
-    return this.subjectsService.create(dto.childId, dto);
+    return this.subjectsService.create(dto);
   }
 
-  @Get('me')
-  @ApiOperation({ summary: 'Get all subjects for logged-in child' })
-  findMySubjects(@Req() req) {
-    return this.subjectsService.findAllByChild(req.user._id);
+  @Get()
+  // @Roles(UserRole.ADMIN, UserRole.PARENT, UserRole.CHILD)
+  // @ApiOperation({ summary: 'Lấy danh sách tất cả môn học (có populate child)' })
+  findAll() {
+    return this.subjectsService.findAll();
   }
 
-  @Get('me/:id')
-  @ApiOperation({ summary: 'Get a specific subject for logged-in child' })
-  findOne(@Req() req, @Param('id') id: string) {
-    return this.subjectsService.findOneByChild(id, req.user._id);
+  @Get('child/:childId')
+  // @Roles(UserRole.ADMIN, UserRole.PARENT)
+  // @ApiOperation({ summary: 'Lấy môn học theo childId' })
+  @ApiParam({ name: 'childId', example: '6648c41dd56a77a06c94f109' })
+  findByChild(@Param('childId') childId: string) {
+    return this.subjectsService.findByChildId(childId);
   }
 
-  @Patch('me/:id')
-  @ApiOperation({ summary: 'Update a subject for logged-in child' })
-  update(@Req() req, @Param('id') id: string, @Body() dto: UpdateSubjectDto) {
-    return this.subjectsService.update(id, req.user._id, dto);
+  @Put(':id')
+  // @Roles(UserRole.ADMIN, UserRole.PARENT)
+  // @ApiOperation({ summary: 'Cập nhật môn học' })
+  @ApiParam({ name: 'id', example: '6648c66dd56a77a06c94f110' })
+  update(@Param('id') id: string, @Body() dto: UpdateSubjectDto) {
+    return this.subjectsService.update(id, dto);
   }
 
-  @Delete('me/:id')
-  @ApiOperation({ summary: 'Delete a subject for logged-in child' })
-  remove(@Req() req, @Param('id') id: string) {
-    return this.subjectsService.remove(id, req.user._id);
+  @Delete(':id')
+  // @Roles(UserRole.ADMIN)
+  // @ApiOperation({ summary: 'Xoá môn học' })
+  @ApiParam({ name: 'id', example: '6648c66dd56a77a06c94f110' })
+  remove(@Param('id') id: string) {
+    return this.subjectsService.remove(id);
   }
 }

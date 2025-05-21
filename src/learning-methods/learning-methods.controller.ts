@@ -25,6 +25,11 @@ import { LearningMethodService } from './learning-methods.service';
     create(@Body() dto: CreateLearningMethodDto) {
       return this.service.create(dto);
     }
+
+    @Get()
+    findAll() {
+      return this.service.findAll();
+    }
   
     @Get('child/:childId')
     findAllByChild(@Param('childId') childId: string) {

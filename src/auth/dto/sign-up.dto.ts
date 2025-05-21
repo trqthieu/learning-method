@@ -16,9 +16,5 @@ export class SignUpDto {
   @MinLength(8)
   readonly password: string;
 
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  readonly address?: string;
 }
 

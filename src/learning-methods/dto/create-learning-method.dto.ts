@@ -1,26 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsMongoId, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsMongoId, IsDateString } from 'class-validator';
 
 export class CreateLearningMethodDto {
-  @ApiProperty({ example: 'Self-paced Reading' })
+  @ApiProperty()
+  @IsString()
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: 'Child reads books alone' })
+  @ApiProperty({ required: false })
+  @IsString()
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ example: '663d92dd15823ad3dbfdebd1' })
+  @ApiProperty()
   @IsMongoId()
   childId: string;
 
-  @ApiProperty({ example: '2025-06-01' })
-  @IsOptional()
+  @ApiProperty()
   @IsDateString()
-  startDate?: string;
+  startDate: string;
 
-  @ApiProperty({ example: '2025-06-30' })
-  @IsOptional()
+  @ApiProperty()
   @IsDateString()
-  endDate?: string;
+  endDate: string;
 }

@@ -19,6 +19,9 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateProfileDto } from 'src/users/dto/update-profile.dto';
 import * as dotenv from 'dotenv';
+import { RolesGuard } from './roles.guard';
+import { Roles } from './roles.decorator';
+import { UserRole } from 'src/schemas/user.schema';
 
 dotenv.config();
 
@@ -79,5 +82,13 @@ export class AuthController {
   @Put('profile')
   async updateProfile(@Req() req, @Body() updateData: UpdateProfileDto) {
     return this.authService.updateProfile(req.user, updateData);
+  }
+
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(UserRole.ADMIN)
+  // @ApiBearerAuth()
+  @Post('register-admin')
+  registerAdmin(@Body() dto: SignUpDto) {
+    return this.authService.registerAdmin(dto);
   }
 }

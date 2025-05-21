@@ -16,6 +16,10 @@ export class LearningMethodService {
     return this.learningMethodModel.create(dto);
   }
 
+  async findAll() {
+    return this.learningMethodModel.find().populate('childId').exec();
+  }
+
   async findAllByChild(childId: string) {
     return this.learningMethodModel.find({ childId }).exec();
   }

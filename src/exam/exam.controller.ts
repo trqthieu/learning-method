@@ -6,6 +6,7 @@ import {
   Body,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ExamService } from './exam.service';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
@@ -14,9 +15,13 @@ import { UpdateExamDto } from './dto/update-exam.dto';
 import { AutoExamDto } from './dto/auto-exam.dto';
 import { AssessLearningMethodDto } from './dto/assess-learning-method.dto';
 import { SubmittedAnswerDto } from './dto/submit-exam.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @ApiTags('Exam')
 @Controller('exams')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ExamController {
   constructor(private readonly examService: ExamService) {}
 

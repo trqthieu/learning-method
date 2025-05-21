@@ -4,6 +4,12 @@ import mongoose from 'mongoose';
 
 export type UserDocument = User & Document; // ✅ Define and export UserDocument
 
+export enum UserRole {
+  ADMIN = 'admin',
+  PARENT = 'parent',
+  CHILD = 'child',
+}
+
 @Schema({ timestamps: true })
 export class User {
   _id: string;
@@ -23,20 +29,11 @@ export class User {
   @Prop()
   provider: string;
 
-  @Prop({ required: true, enum: ['parent', 'child', 'admin'], default: 'parent' })
+  @Prop({ enum: UserRole, default: UserRole.PARENT })
   role: string;
 
-  @Prop()
-  avatar: string;
-
-  @Prop()
-  address: string;
-
-  @Prop({ default: false })
-  isBlocked: boolean;
-
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  parentId?: mongoose.Types.ObjectId;
+  parentId?: mongoose.Schema.Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

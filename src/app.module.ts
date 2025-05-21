@@ -8,6 +8,8 @@ import { SubjectsModule } from './subjects/subjects.module';
 import { LearningMethodModule } from './learning-methods/learning-methods.module';
 import { ExamModule } from './exam/exam.module';
 import { ReportModule } from './report/report.module';
+import { LearningPlanModule } from './learning-plan/learning-plan.module';
+import { NotificationModule } from './notification/notification.module';
 
 dotenv.config();
 
@@ -20,7 +22,9 @@ dotenv.config();
     SubjectsModule,
     LearningMethodModule,
     ExamModule,
-    ReportModule
+    ReportModule,
+    LearningPlanModule,
+    NotificationModule
   ],
 })
 export class AppModule {}

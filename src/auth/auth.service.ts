@@ -113,4 +113,8 @@ export class AuthService {
     const updated = await this.usersService.updateProfile(user._id, updateData);
     return updated;
   }
+
+  async registerAdmin(registerDto: SignUpDto) {
+   return await this.usersService.registerAdmin(registerDto);
+  }
 }

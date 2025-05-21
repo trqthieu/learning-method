@@ -8,14 +8,15 @@ import {
   Req,
   UseGuards,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { BookAppointmentDto } from './dto/book-appointment.dto';
-import { ChatMessageDto } from './dto/chat-message.dto';
-import { ReviewDto } from './dto/review.dto';
+import { UpdateProfileDto, UpdateUserDto } from './dto/update-profile.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from 'src/auth/roles.decorator';
+import { UserRole } from 'src/schemas/user.schema';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -35,6 +36,36 @@ export class UsersController {
   @Put('profile')
   async updateProfile(@Req() req, @Body() updateProfileDto: UpdateProfileDto) {
     return this.usersService.updateProfile(req.user._id, updateProfileDto);
+  }
+
+  @Post()
+  @Roles(UserRole.ADMIN)
+  create(@Body() dto: CreateUserDto) {
+    return this.usersService.create(dto);
+  }
+
+  @Get()
+  @Roles(UserRole.ADMIN)
+  findAll() {
+    return this.usersService.findAll();
+  }
+
+  @Get(':id')
+  @Roles(UserRole.ADMIN)
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
+  }
+
+  @Put(':id')
+  @Roles(UserRole.ADMIN)
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    return this.usersService.update(id, dto);
+  }
+
+  @Delete(':id')
+  @Roles(UserRole.ADMIN)
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(id);
   }
 
 }

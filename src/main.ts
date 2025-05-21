@@ -9,8 +9,8 @@ async function bootstrap() {
   app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
   // Swagger configuration
   const config = new DocumentBuilder()
-    .setTitle('Massage Booking API')
-    .setDescription('API documentation for the Massage Booking System')
+    .setTitle('API docs')
+    .setDescription('API documentation')
     .setVersion('1.0')
     .addBearerAuth() // if you're using JWT authentication
     .build();

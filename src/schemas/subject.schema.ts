@@ -12,7 +12,7 @@ export class Subject {
   name: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
-  childId: string;
+  childId: mongoose.Schema.Types.ObjectId;
 }
 
 export const SubjectSchema = SchemaFactory.createForClass(Subject);
