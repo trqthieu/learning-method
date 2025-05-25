@@ -68,4 +68,8 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
+  @Get('parent/:parentId/children')
+  async getChildrenOfParent(@Param('parentId') parentId: string) {
+    return this.usersService.getChildrenOfParent(parentId);
+  }
 }

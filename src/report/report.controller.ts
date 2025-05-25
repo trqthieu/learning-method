@@ -40,6 +40,14 @@ export class ReportController {
     return this.reportService.getResultsByUser(userId);
   }
 
+  @Get('child/:childId/exam/:examId')
+  async getChildExamResult(
+    @Param('childId') childId: string,
+    @Param('examId') examId: string,
+  ) {
+    return this.reportService.getExamResultByChildAndExam(childId, examId);
+  }
+
   @Get('child/:userId/stats')
   async getStatsByUser(@Param('userId') userId: string) {
     return this.reportService.getStatsForUser(userId);

@@ -14,9 +14,7 @@ import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.findByEmail(email);
@@ -72,7 +70,6 @@ export class UsersService {
     return this.userModel.find().sort({ createdAt: 'desc' }).exec();
   }
 
-
   async createFromGoogle(googleUser: any): Promise<UserDocument> {
     // Map fields from the Google user to your user schema.
     const createdUser = new this.userModel({
@@ -104,7 +101,6 @@ export class UsersService {
     return updatedUser;
   }
 
-
   async registerAdmin(registerDto: SignUpDto) {
     const existing = await this.userModel.findOne({ email: registerDto.email });
     if (existing) throw new ConflictException('Email already exists');
@@ -127,5 +123,9 @@ export class UsersService {
   async remove(id: string): Promise<void> {
     const result = await this.userModel.findByIdAndDelete(id);
     if (!result) throw new NotFoundException('User not found');
+  }
+
+  async getChildrenOfParent(parentId: string) {
+    return this.userModel.find({ parentId }).lean();
   }
 }

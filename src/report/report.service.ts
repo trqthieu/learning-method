@@ -80,4 +80,12 @@ export class ReportService {
     const analysis = await this.aiService.analyzeExamResults(examResults);
     return { analysis };
   }
+
+  async getExamResultByChildAndExam(childId: string, examId: string) {
+    
+    return this.examResultModel.findOne({
+      user: childId,
+      exam: examId,
+    }).populate('exam').lean();
+  }
 }
