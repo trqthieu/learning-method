@@ -3,7 +3,7 @@ import axios from 'axios';
 
 @Injectable()
 export class AiService {
-  private readonly apiKey = 'AIzaSyB5sLvbSrK2hTlx1t-EsqXjxyQg99RJKQs';
+  private readonly apiKey = '';
   private readonly apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
   async generateExam(prompt: string): Promise<any> {
